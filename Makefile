@@ -18,6 +18,15 @@ ifeq ($(PLATFORM), a320)
 	TARGET		:= shisen.dge
 endif
 
+ifeq ($(PLATFORM), bittboy)
+	CC		:= arm-linux-gcc
+	STRIP		:= arm-linux-strip
+	SYSROOT		:= $(shell $(CC) --print-sysroot)
+	CFLAGS		:= $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
+	CFLAGS		+= -DNO_SCALING
+	LDFLAGS		:= $(shell $(SYSROOT)/usr/bin/sdl-config --libs) -lSDL_mixer -lm
+endif
+
 ifeq ($(PLATFORM), mingw32)
 	CC		:= i486-mingw32-gcc
 	STRIP		:= i486-mingw32-strip

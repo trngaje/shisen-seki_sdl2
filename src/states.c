@@ -75,8 +75,6 @@ void logic()
 
 void draw()
 {
-	clearScreen();
-
 	switch(programStateActive)
 	{
 		case STATE_TITLE:
