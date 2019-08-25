@@ -23,7 +23,7 @@ ifeq ($(PLATFORM), bittboy)
 	STRIP		:= arm-linux-strip
 	SYSROOT		:= $(shell $(CC) --print-sysroot)
 	CFLAGS		:= $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
-	CFLAGS		+= -DNO_SCALING
+	CFLAGS		+= -DPLATFORM_BITTBOY -DNO_SCALING
 	LDFLAGS		:= $(shell $(SYSROOT)/usr/bin/sdl-config --libs) -lSDL_mixer -lm
 endif
 
