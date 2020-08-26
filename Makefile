@@ -27,6 +27,16 @@ ifeq ($(PLATFORM), bittboy)
 	LDFLAGS		:= $(shell $(SYSROOT)/usr/bin/sdl-config --libs) -lSDL_mixer -lm
 endif
 
+ifeq ($(PLATFORM), retrofw)
+	CC		:= mipsel-linux-gcc
+	STRIP		:= mipsel-linux-strip
+	SYSROOT		:= $(shell $(CC) --print-sysroot)
+	CFLAGS		:= $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
+	CFLAGS		+= -DPLATFORM_RETROFW -DNO_FRAMELIMIT -DNO_SCALING
+	LDFLAGS		:= $(shell $(SYSROOT)/usr/bin/sdl-config --libs) -lSDL_mixer -lm
+	RELEASEDIR	:= release
+endif
+
 ifeq ($(PLATFORM), mingw32)
 	CC		:= i486-mingw32-gcc
 	STRIP		:= i486-mingw32-strip
@@ -78,6 +88,16 @@ ifeq ($(PLATFORM), gcw0)
 	cp shisen.png		$(RELEASEDIR)
 	cp LICENSE.txt		$(RELEASEDIR)
 	mksquashfs		$(RELEASEDIR) Shisen-Seki.opk -all-root -noappend -no-exports -no-xattrs
+endif
+ifeq ($(PLATFORM), retrofw)
+	mkdir -p		$(RELEASEDIR)
+	cp $(TARGET)		$(RELEASEDIR)
+	cp -R data		$(RELEASEDIR)
+	cp default.retrofw.desktop	$(RELEASEDIR)
+	cp retrofw.man.txt		$(RELEASEDIR)
+	cp shisen.png		$(RELEASEDIR)
+	cp LICENSE.txt		$(RELEASEDIR)
+	mksquashfs $(RELEASEDIR) Shisen-Seki.opk -noappend -no-xattrs
 endif
 
 clean:

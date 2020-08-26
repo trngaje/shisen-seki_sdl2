@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Shisen-Seki
+Comment=A classic japanese logic game
+Exec=shisen.elf
+Terminal=false
+Type=Game
+StartupNotify=true
+Icon=shisen
+Categories=games;
+Version=20200826
+X-OD-Manual=retrofw.man.txt
