@@ -12,10 +12,15 @@ int hiscorePage;
 int highlightPage = -1;
 int highlightEntry = -1;
 
+
+SDL_Surface *hiscoreBackgroundIMG=NULL;
+
 void hiscoreUnload()
 {
-	SDL_FreeSurface(hiscoreBackgroundIMG);
-	hiscoreBackgroundIMG = NULL;
+	if (!hiscoreBackgroundIMG) {
+		SDL_FreeSurface(hiscoreBackgroundIMG);
+		hiscoreBackgroundIMG = NULL;
+	}
 	hiscorePage = 0;
 	highlightPage = -1;
 	highlightEntry = -1;

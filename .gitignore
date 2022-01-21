@@ -2,3 +2,5 @@ obj/
 release/
 shisen.elf
 Shisen-Seki.opk
+shisen
+*.bak

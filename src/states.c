@@ -10,6 +10,10 @@
 
 State programStateActive = STATE_NONE;
 State programStateNew = STATE_TITLE;
+#ifdef OGS_SDL2
+extern SDL_Window* sdlWindow;
+extern SDL_Surface* sdlSurface;
+#endif
 
 void checkState()
 {
@@ -100,5 +104,12 @@ void draw()
 		break;
 	}
 
+#ifdef OGS_SDL2
+	// for test
+	//SDL_FillRect(screenScaled, NULL, SDL_MapRGB(screenScaled->format, 255, 0, 0));
+	SDL_BlitScaled(screenScaled, NULL, sdlSurface, NULL);
+	SDL_UpdateWindowSurface(sdlWindow);
+#else
 	SDL_Flip(screenScaled);
+#endif
 }

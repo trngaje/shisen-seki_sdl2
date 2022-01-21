@@ -21,10 +21,18 @@ void input()
 				quit = 1;
 			break;
 			case SDL_KEYDOWN:			// Button press
+#ifdef OGS_SDL2
+				keys[event.key.keysym.scancode] = 1;
+#else
 				keys[event.key.keysym.sym] = 1;
+#endif
 			break;
 			case SDL_KEYUP:				// Button release
+#ifdef OGS_SDL2
+				keys[event.key.keysym.scancode] = 0;
+#else
 				keys[event.key.keysym.sym] = 0;
+#endif
 			break;
 			case SDL_JOYAXISMOTION:			// Analog joystick movement
 				if (!enableJoystick)
@@ -94,6 +102,60 @@ void input()
 					default:
 					break;
 				}
+			break;
+			case SDL_JOYHATMOTION:
+				if (event.jhat.value == SDL_HAT_CENTERED) {
+					keys[KEY_LEFT] = 0;
+					keys[KEY_RIGHT] = 0;
+					keys[KEY_UP] = 0;
+					keys[KEY_DOWN] = 0;						
+				}
+				else 
+				{
+					if (event.jhat.value & SDL_HAT_LEFT) 
+					{
+						keys[KEY_LEFT] = 1;
+						keys[KEY_RIGHT] = 0;
+					}
+					else if (event.jhat.value & SDL_HAT_RIGHT) 
+					{
+						keys[KEY_LEFT] = 0;
+						keys[KEY_RIGHT] = 1;
+					}
+					else
+					{
+						keys[KEY_LEFT] = 0;
+						keys[KEY_RIGHT] = 0;					
+					}
+
+					if (event.jhat.value & SDL_HAT_UP) 
+					{
+						keys[KEY_UP] = 1;
+						keys[KEY_DOWN] = 0;
+					}
+					else if (event.jhat.value & SDL_HAT_DOWN) 
+					{
+						keys[KEY_UP] = 0;
+						keys[KEY_DOWN] = 1;
+					}
+					else
+					{
+						keys[KEY_UP] = 0;
+						keys[KEY_DOWN] = 0;					
+					}
+				}
+				break;
+			case SDL_JOYBUTTONDOWN:
+				if(event.jbutton.button == 0)
+					keys[KEY_CANCEL] = 1;
+				else if(event.jbutton.button == 1)
+					keys[KEY_OK] = 1;
+			break;
+			case SDL_JOYBUTTONUP:
+				if(event.jbutton.button == 0)
+					keys[KEY_CANCEL] = 0;
+				else if(event.jbutton.button == 1)
+					keys[KEY_OK] = 0;
 			break;
 			case SDL_MOUSEBUTTONDOWN:
 				switch (event.button.button)

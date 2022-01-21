@@ -8,6 +8,11 @@ int scale;
 Uint32 curTicks;
 Uint32 lastTicks = 0;
 
+#ifdef OGS_SDL2
+SDL_Window* sdlWindow=NULL;
+SDL_Surface* sdlSurface=NULL;
+#endif
+
 int initSDL()
 {
 	if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK))
@@ -15,8 +20,16 @@ int initSDL()
 		return -1;
 	}
 
+#ifdef OGS_SDL2
+	sdlWindow = SDL_CreateWindow("Shisen-Seki",
+                              SDL_WINDOWPOS_UNDEFINED,  
+                              SDL_WINDOWPOS_UNDEFINED,  
+                              640, 480,
+                              SDL_WINDOW_OPENGL); 
+#else
 	SDL_WM_SetCaption("Shisen-Seki", NULL);
 	SDL_WM_SetIcon(loadImage("data/gfx/icon.bmp"), NULL);
+#endif
 	SDL_ShowCursor(SDL_DISABLE);
 
 	updateScale();
@@ -55,11 +68,15 @@ void updateScale()
 	{
 		SDL_FreeSurface(screen);
 	}
-	
-#ifdef PLATFORM_BITTBOY
-	screenScaled = SDL_SetVideoMode(SCREEN_W * scale, SCREEN_H * scale, SCREEN_BPP, SDL_SWSURFACE);
-#else
-	screenScaled = SDL_SetVideoMode(SCREEN_W * scale, SCREEN_H * scale, SCREEN_BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);
+#ifdef OGS_SDL2
+	sdlSurface = SDL_GetWindowSurface(sdlWindow);
+	screenScaled = SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_W * scale, SCREEN_H * scale, SCREEN_BPP, 0, 0, 0, 0);
+#else	
+	#ifdef PLATFORM_BITTBOY
+		screenScaled = SDL_SetVideoMode(SCREEN_W * scale, SCREEN_H * scale, SCREEN_BPP, SDL_SWSURFACE);
+	#else
+		screenScaled = SDL_SetVideoMode(SCREEN_W * scale, SCREEN_H * scale, SCREEN_BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	#endif
 #endif
 	screen = scale > 1 ? SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_W, SCREEN_H, SCREEN_BPP, 0, 0, 0, 0) : screenScaled;
 }
@@ -84,7 +101,11 @@ SDL_Surface *loadImage(char *fileName)
 		return NULL;
 	}
 
+#ifdef OGS_SDL2
+	optimizedImage = SDL_CreateRGBSurface(SDL_SWSURFACE, loadedImage->w, loadedImage->h, SCREEN_BPP, 0, 0, 0, 0);
+#else
 	optimizedImage = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_DOUBLEBUF, loadedImage->w, loadedImage->h, SCREEN_BPP, 0, 0, 0, 0);
+#endif
 	SDL_BlitSurface(loadedImage, NULL, optimizedImage, NULL);
 	SDL_FreeSurface(loadedImage);
 
@@ -95,7 +116,11 @@ SDL_Surface *loadImage(char *fileName)
 	}
 
 	colorKey = SDL_MapRGB(optimizedImage->format, 255, 0, 255); // Set transparency to magenta.
+#ifdef OGS_SDL2
+	SDL_SetColorKey(optimizedImage, SDL_TRUE, colorKey);
+#else
 	SDL_SetColorKey(optimizedImage, SDL_SRCCOLORKEY, colorKey);
+#endif
 
 	return optimizedImage;
 }

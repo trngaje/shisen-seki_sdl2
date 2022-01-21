@@ -15,7 +15,7 @@ typedef struct scoreEntry
 	unsigned long time;
 } scoreEntry;
 
-SDL_Surface *hiscoreBackgroundIMG;
+extern SDL_Surface *hiscoreBackgroundIMG;
 extern scoreEntry scoreTable[MAX_MODES][MAX_SCORES];
 extern int hiscorePage;
 
